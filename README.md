@@ -1,4 +1,4 @@
-![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5598245.svg)
+![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5598278.svg)
 
 # semUtils
 Tools for Structural Equation Modeling
@@ -45,4 +45,4 @@ mediation(model = model,
 
 ## Citation
 
-Julien Cloarec. (2021). semUtils: Tools for Structural Equation Modeling (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.5598245
+Julien Cloarec. (2021). juliencloarec/semUtils: (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.5598278
