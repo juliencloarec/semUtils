@@ -2,3 +2,10 @@
 
 # semUtils
 Tools for Structural Equation Modeling
+
+## Installing
+
+``` r
+# the devtools package needs to be installed for this to work
+devtools::install_github("juliencloarec/semUtils") 
+``
