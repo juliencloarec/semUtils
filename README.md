@@ -1,5 +1,3 @@
-![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5598244.svg)
-
 # semUtils
 Tools for Structural Equation Modeling
 
