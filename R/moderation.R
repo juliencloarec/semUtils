@@ -8,7 +8,7 @@
 #' @param model
 #'
 #' @importFrom lavaan sem standardizedSolution
-#' @importFrom stringr str_split str_replace str_replace_all
+#' @importFrom stringr str_split str_replace str_replace_all str_sub
 #' @import magrittr
 #' @importFrom knitr kable
 #' @importFrom dplyr filter
@@ -82,7 +82,7 @@ moderation <- function(model, database, dependent_variable, independent_variable
   measurementModel <- toString(measurementModel)
   measurementModel <- str_replace_all(measurementModel, ",", "\n")
 
-  measurementModel <- paste(measurementModel, "\n", paste0(moderating_variable,"x",independent_variable), "=~")
+  measurementModel <- paste(measurementModel, "\n", paste0(independent_variable,"x",moderating_variable), "=~")
   for (i in 1:ncol(database_last_columns)) {
     measurementModel <- paste(measurementModel, names(database_last_columns)[i], "+")
   }
@@ -91,30 +91,26 @@ moderation <- function(model, database, dependent_variable, independent_variable
   structuralModel <- toString(structuralModel)
   structuralModel <- str_replace_all(structuralModel, ",", "\n")
 
-  structuralModel <- paste(structuralModel, "\n", dependent_variable, "~", paste0(moderating_variable,"x",independent_variable))
+  structuralModel <- paste(structuralModel, "\n", dependent_variable, "~", paste0(independent_variable ,"x",moderating_variable))
 
   modelFinal <- paste(measurementModel, "\n", covarianceSyntax, "\n", structuralModel)
 
   fit <- lavaan::sem(modelFinal, data=database)
 
-  moderationResults <- standardizedSolution(fit, type="std.all", pvalue=TRUE)
-  moderationResults <- moderationResults %>% filter(moderationResults$op == "~")
-  moderationResults <- moderationResults[nrow(moderationResults),]
+  moderationResults <- standardizedSolution(fit, type="std.all", pvalue=TRUE) %>% filter(op == "~")
 
-  if(moderationResults$pvalue <= 0.05 & moderationResults$est.std > 0){
-    print(paste0("The moderating effect is positive and significant (Beta = ", round(moderationResults$est.std[1],2), ", p = ", round(moderationResults$pvalue[1],3),")"))
+  for (i in 1:nrow(moderationResults)) {
+    moderationResults$Effect[i] <- paste(moderationResults$rhs[i], "=>", moderationResults$lhs[i])
   }
 
-  if(moderationResults$pvalue > 0.05 & moderationResults$est.std > 0){
-    print(paste0("The moderating effect is positive but not significant (Beta = ", round(moderationResults$est.std[1],2), ", p = ", round(moderationResults$pvalue[1],3),")"))
-  }
+  moderationResults <- data.frame(moderationResults[,10],round(moderationResults[,4], 2), round(moderationResults[,7], 3))
 
-  if(moderationResults$pvalue <= 0.05 & moderationResults$est.std < 0){
-    print(paste0("The moderating effect is negative and significant (Beta = ", round(moderationResults$est.std[1],2), ", p = ", round(moderationResults$pvalue[1],3),")"))
-  }
+  names(moderationResults)[1:3] <- c("Effects",
+                                     "β",
+                                     "p-value")
 
-  if(moderationResults$pvalue > 0.05 & moderationResults$est.std < 0){
-    print(paste0("The moderating effect is negative but not significant (Beta = ", round(moderationResults$est.std[1],2), ", p = ", round(moderationResults$pvalue[1],3),")"))
-  }
+  rownames(moderationResults) <- NULL
+
+  kable(moderationResults)
 
 }

@@ -225,7 +225,7 @@ mediation <- function(model, database, confidence_interval, bootstrap_samples){
   }
 
   names(mediationResults)[1:5] <- c("Indirect Effects",
-                                    "Beta",
+                                    "β",
                                     paste0(confidence_interval, "% CI (lower)", ""),
                                     paste0(confidence_interval, "% CI (upper)", ""),
                                     "Significant")
