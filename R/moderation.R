@@ -2,8 +2,8 @@
 #'
 #' @param database
 #'
-#' @param dependent_variable_variable
-#' @param independent_variable_variable_variable
+#' @param dependent_variable
+#' @param independent_variable
 #' @param moderating_variable
 #' @param model
 #'
@@ -15,9 +15,9 @@
 #' @export
 #'
 #'
-moderation <- function(model, database, dependent_variable_variable, independent_variable_variable_variable, moderating_variable){
+moderation <- function(model, database, dependent_variable, independent_variable, moderating_variable){
 
-  model <- str_split(modelInput, "\n", simplify = TRUE)
+  model <- str_split(model, "\n", simplify = TRUE)
   model <- model[model != ""]
   model <- str_replace_all(model, " " , "")
 
@@ -36,7 +36,7 @@ moderation <- function(model, database, dependent_variable_variable, independent
       var1_items <- unlist(var1_items)
       var1_items <- as.data.frame(var1_items)
     }
-    if(independent_variable_variable == str_split(measurementModel[i], "=~", simplify = TRUE)[1]){
+    if(independent_variable == str_split(measurementModel[i], "=~", simplify = TRUE)[1]){
       var2_items <- str_split(measurementModel[i], "~", simplify = TRUE)[2]
       var2_items <- str_split(var2_items, "\\+")
       var2_items <- unlist(var2_items)
@@ -82,7 +82,7 @@ moderation <- function(model, database, dependent_variable_variable, independent
   measurementModel <- toString(measurementModel)
   measurementModel <- str_replace_all(measurementModel, ",", "\n")
 
-  measurementModel <- paste(measurementModel, "\n", paste0(moderating_variable,"x",independent_variable_variable), "=~")
+  measurementModel <- paste(measurementModel, "\n", paste0(moderating_variable,"x",independent_variable), "=~")
   for (i in 1:ncol(database_last_columns)) {
     measurementModel <- paste(measurementModel, names(database_last_columns)[i], "+")
   }
@@ -91,7 +91,7 @@ moderation <- function(model, database, dependent_variable_variable, independent
   structuralModel <- toString(structuralModel)
   structuralModel <- str_replace_all(structuralModel, ",", "\n")
 
-  structuralModel <- paste(structuralModel, "\n", dependent_variable, "~", paste0(moderating_variable,"x",independent_variable_variable))
+  structuralModel <- paste(structuralModel, "\n", dependent_variable, "~", paste0(moderating_variable,"x",independent_variable))
 
   modelFinal <- paste(measurementModel, "\n", covarianceSyntax, "\n", structuralModel)
 
